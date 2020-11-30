@@ -1,12 +1,27 @@
+from pathlib import Path
+from joblib import dump, load
+
+import os
 import cv2
 import imutils
+import numpy as np
+from tqdm import tqdm
 
 import src.utils as utils
 
 
 class Recognizer:
-    def __init__(self, feature_extractions_methods):
+    def __init__(self, feature_extractions_methods, classifiers):
         self.feature_extractions_methods = feature_extractions_methods
+        self.classifiers = classifiers
+
+    def train(self, train_X, train_y, models_path):
+        train_data = []
+        for x in train_X:
+            train_data.append(self.apply_features(x))
+        for classifier in tqdm(self.classifiers):
+            classifier.fit(X=train_data, y=train_y)
+            dump(classifier, models_path / f'{str(classifier).replace(")", "").replace("(", "")}.joblib')
 
     @staticmethod
     def detect_number(img):
@@ -25,12 +40,25 @@ class Recognizer:
         src_gray = cv2.GaussianBlur(src_gray, (5, 5), 0)
         return src_gray
 
-    def recognize(self, img_path):
-        image = cv2.imread(str(img_path), 1)
-        gray_img = self.make_grayscale(image)
-        detected_img = self.detect_number(gray_img)
+    def apply_features(self, detected_img):
         features = []
         for method in self.feature_extractions_methods:
             features.extend(method(detected_img))
+        return features
+
+    def recognize(self, image, models_path):
+        # gray_img = self.make_grayscale(image)
+        # detected_img = self.detect_number(image)
+        predictions = []
+        for model_name in os.listdir(models_path):
+            model = load(models_path / model_name)
+            features = self.apply_features(image)
+            features = np.array(features).reshape(1, -1)
+            predictions.append(model.predict(features))
+        pred = max(predictions, key=predictions.count)
+        print(predictions)
+        if predictions.count(pred) < 2:
+            return None
+        return pred
 
 
