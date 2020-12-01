@@ -20,8 +20,8 @@ def main():
     data_dir = Path('../data')
     models_path = Path('../models')
     is_train_mode = False
-    is_prediction_mode = True
-    is_test_mode = False
+    is_prediction_mode = False
+    is_test_mode = True
 
     methods = [fem.make_mean_value_in_square, fem.haar_features]
     classifiers = [SVC(), DecisionTreeClassifier(), SGDClassifier(), GradientBoostingClassifier()]

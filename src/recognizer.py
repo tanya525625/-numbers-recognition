@@ -56,7 +56,6 @@ class Recognizer:
             features = np.array(features).reshape(1, -1)
             predictions.append(model.predict(features))
         pred = max(predictions, key=predictions.count)
-        print(predictions)
         if predictions.count(pred) < 2:
             return None
         return pred
