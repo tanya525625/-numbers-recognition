@@ -21,6 +21,7 @@ class Recognizer:
         for x in tqdm(train_X):
             image = cv2.cvtColor(np.array(x), cv2.COLOR_RGB2BGR)
             image = self.make_grayscale(image)
+            _, image = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
             train_data.append(self.apply_features(image))
         for classifier in tqdm(self.classifiers):
             classifier.fit(X=train_data, y=train_y)
@@ -58,9 +59,8 @@ class Recognizer:
             features = self.apply_features(image)
             features = np.array(features).reshape(1, -1)
             predictions.append(model.predict(features))
-        print(predictions)
+            print(f'{model_name}: {model.predict(features)}')
         pred = max(predictions, key=predictions.count)
-        print(predictions)
         if predictions.count(pred) < 2:
             return None
         return pred

@@ -23,13 +23,13 @@ import src.feature_extractions_methods as fem
 def main():
     data_dir = Path('../data')
     models_path = Path('../models')
-    is_train_mode = True
-    is_prediction_mode = False
+    is_train_mode = False
+    is_prediction_mode = True
     is_test_mode = False
-    file_path = data_dir / 'var.jpg'
+    file_path = data_dir / 'var2.jpg'
 
     methods = [fem.make_mean_value_in_square, fem.haar_features, fem.diag_prizn_1, fem.diag_prizn_2]
-    classifiers = [SVC(), DecisionTreeClassifier(), GradientBoostingClassifier(), KNeighborsClassifier()]
+    classifiers = [KNeighborsClassifier(), GradientBoostingClassifier(), SVC()]
     # arguments = []
 
     recognizer = Recognizer(methods, classifiers)
@@ -52,20 +52,24 @@ def main():
         # img = train_X[0]
         # image = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
         # image = recognizer.make_grayscale(image)
+        # _, thresh1 = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
         # width, height = image.shape[:2]
         # my_img = ImageOps.invert(img_lists[0])
         # my_img = cv2.cvtColor(np.array(my_img), cv2.COLOR_RGB2BGR)
         # my_img = recognizer.make_grayscale(my_img)
         # my_img = utils.resize_image(my_img, 4, 7, 7)
-        # width, height = my_img.shape[:2]
+        # print(my_img)
+        # # width, height = my_img.shape[:2]
         for image in img_lists:
             image = ImageOps.invert(image)
             image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
             image = recognizer.make_grayscale(image)
             image = utils.resize_image(image, 4, 7, 7)
+            _, image = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
+            # image = cv2.blur(image, (3, 3))
             utils.show_image(image)
             pred = recognizer.recognize(image, models_path)
-            print(f'Recognized digit: {pred}')
+            # print(f'Recognized digit: {pred}')
 
 
 if __name__ == '__main__':
