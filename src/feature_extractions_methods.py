@@ -4,7 +4,7 @@ import numpy as np
 import src.utils as utils
 
 
-def make_mean_value_in_square(image, window=10):
+def make_mean_value_in_square(image, window=4):
     image = utils.resize_image(image, window)
     squares_mean_values = []
     h, w = image.shape
@@ -15,7 +15,7 @@ def make_mean_value_in_square(image, window=10):
     return squares_mean_values
 
 
-def haar_features(image, window=10):
+def haar_features(image, window=4):
     image = utils.resize_image(image, window)
     h, w = image.shape
     half = int(w / 2)
@@ -25,7 +25,10 @@ def haar_features(image, window=10):
     return [np.mean(left_part), np.mean(right_prt)]
 
 
-def process_img(img, size = (90,60)):
+def process_img(img, size=(28, 28)):
+    # img_2 = cv2.resize(img, size)
+    if isinstance(img, np.ndarray):
+        img = Image.fromarray(img).convert('RGB')
     img_2 = img.resize(size, Image.ANTIALIAS)
     pix_22 = img_2.load()
     width_2 = size[0]
@@ -38,7 +41,7 @@ def process_img(img, size = (90,60)):
     return pix_2
 
 
-def diag_prizn_1(img, size = (90,60), h = 10):
+def diag_prizn_1(img, size=(28, 28), h=28):
     pix_2 = process_img(img, size)
     width_2 = size[0]
     height_2 = size[1]
@@ -84,7 +87,7 @@ def diag_prizn_1(img, size = (90,60), h = 10):
     return prizn_1
 
 
-def diag_prizn_2(img, size = (90,60), h = 10):
+def diag_prizn_2(img, size = (28,28), h = 28):
     pix_2 = process_img(img, size)
     width_2 = size[0]
     height_2 = size[1]

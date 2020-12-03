@@ -17,8 +17,11 @@ class Recognizer:
 
     def train(self, train_X, train_y, models_path):
         train_data = []
-        for x in train_X:
-            train_data.append(self.apply_features(x))
+        print("Features' applying process")
+        for x in tqdm(train_X):
+            image = cv2.cvtColor(np.array(x), cv2.COLOR_RGB2BGR)
+            image = self.make_grayscale(image)
+            train_data.append(self.apply_features(image))
         for classifier in tqdm(self.classifiers):
             classifier.fit(X=train_data, y=train_y)
             dump(classifier, models_path / f'{str(classifier).replace(")", "").replace("(", "")}.joblib')
@@ -55,7 +58,9 @@ class Recognizer:
             features = self.apply_features(image)
             features = np.array(features).reshape(1, -1)
             predictions.append(model.predict(features))
+        print(predictions)
         pred = max(predictions, key=predictions.count)
+        print(predictions)
         if predictions.count(pred) < 2:
             return None
         return pred
