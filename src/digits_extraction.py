@@ -7,7 +7,7 @@ from PIL import Image
 # image_file = "C:\\Users\\Home\\Desktop\\alg\\source.png"
 
 
-def letters_extract(image_file: str, out_size=100) -> List[Image.Image]:
+def letters_extract(image_file: str, out_size=28) -> List[Image.Image]:
     img = cv2.imread(image_file)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     ret, thresh = cv2.threshold(gray, 254, 255, cv2.THRESH_BINARY)
@@ -43,10 +43,10 @@ def letters_extract(image_file: str, out_size=100) -> List[Image.Image]:
             else:
                 letter_square = letter_crop
 
-            # Resize letter to 100x100 and add letter and its X-coordinate
+            # Resize letter to 28x28 and add letter and its X-coordinate
             letters.append((x, w, cv2.resize(letter_square, (out_size, out_size), interpolation=cv2.INTER_AREA)))
-    # cv2.imshow("Output", output)
-    # cv2.waitKey(0)
+    cv2.imshow("Output", output)
+    cv2.waitKey(0)
     # Sort array in place by X-coordinate
     letters.sort(key=lambda x: x[0], reverse=False)
 
