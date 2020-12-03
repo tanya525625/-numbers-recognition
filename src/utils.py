@@ -7,7 +7,7 @@ def show_image(img):
     cv2.destroyAllWindows()
 
 
-def resize_image(img, window, st_h=10, st_w=10):
+def resize_image(img, window, st_h=7, st_w=7):
     width = int(st_w * window)
     height = int(st_h * window)
     dim = (width, height)
