@@ -45,8 +45,8 @@ def letters_extract(image_file: str, out_size=28) -> List[Image.Image]:
 
             # Resize letter to 28x28 and add letter and its X-coordinate
             letters.append((x, w, cv2.resize(letter_square, (out_size, out_size), interpolation=cv2.INTER_AREA)))
-    cv2.imshow("Output", output)
-    cv2.waitKey(0)
+    # cv2.imshow("Output", output)
+    # cv2.waitKey(0)
     # Sort array in place by X-coordinate
     letters.sort(key=lambda x: x[0], reverse=False)
 
