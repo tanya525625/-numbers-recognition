@@ -23,13 +23,13 @@ import src.feature_extractions_methods as fem
 def main():
     data_dir = Path('../data')
     models_path = Path('../models')
-    is_train_mode = False
-    is_prediction_mode = True
+    is_train_mode = True
+    is_prediction_mode = False
     is_test_mode = False
     file_path = data_dir / 'var.jpg'
 
     methods = [fem.make_mean_value_in_square, fem.haar_features, fem.diag_prizn_1, fem.diag_prizn_2]
-    classifiers = [SVC(), DecisionTreeClassifier(), GradientBoostingClassifier(), KNeighborsClassifier]
+    classifiers = [SVC(), DecisionTreeClassifier(), GradientBoostingClassifier(), KNeighborsClassifier()]
     # arguments = []
 
     recognizer = Recognizer(methods, classifiers)
