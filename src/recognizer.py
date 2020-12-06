@@ -3,10 +3,13 @@ from joblib import dump, load
 
 import os
 import cv2
+import time
 import imutils
 import numpy as np
+from PIL import ImageOps, Image
 from tqdm import tqdm
 
+from src.digits_extraction import letters_extract
 import src.utils as utils
 
 
@@ -17,14 +20,20 @@ class Recognizer:
 
     def train(self, train_X, train_y, models_path):
         train_data = []
+        train_data_y = []
         print("Features' applying process")
-        for x in tqdm(train_X):
-            image = cv2.cvtColor(np.array(x), cv2.COLOR_RGB2BGR)
-            image = self.make_grayscale(image)
-            _, image = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
+        time.sleep(1)
+        for x, y in tqdm(zip(train_X, train_y)):
+            x = cv2.cvtColor(np.array(x), cv2.COLOR_RGB2BGR)
+            x = self.make_grayscale(x)
+            x = utils.resize_image(x, 4, 7, 7)
+            _, image = cv2.threshold(x, 127, 255, cv2.THRESH_BINARY)
+            utils.show_image(image)
             train_data.append(self.apply_features(image))
+            train_data_y.append(y)
+        print(len(train_data))
         for classifier in tqdm(self.classifiers):
-            classifier.fit(X=train_data, y=train_y)
+            classifier.fit(X=train_data, y=train_data_y)
             dump(classifier, models_path / f'{str(classifier).replace(")", "").replace("(", "")}.joblib')
 
     @staticmethod
@@ -59,7 +68,7 @@ class Recognizer:
             features = self.apply_features(image)
             features = np.array(features).reshape(1, -1)
             predictions.append(model.predict(features))
-            print(f'{model_name}: {model.predict(features)}')
+            # print(f'{model_name}: {model.predict(features)}')
         pred = max(predictions, key=predictions.count)
         if predictions.count(pred) < 2:
             return None

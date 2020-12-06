@@ -4,11 +4,14 @@ import numpy as np
 import cv2
 from PIL import Image
 
-# image_file = "C:\\Users\\Home\\Desktop\\alg\\source_3.png"
+# image_file = "C:\\Users\\Home\\Desktop\\alg\\source.png"
 
 
-def letters_extract(image_file: str, out_size=28) -> List[Image.Image]:
-    img = cv2.imread(image_file)
+def letters_extract(image_file: str, is_read=True, out_size=28) -> List[Image.Image]:
+    if is_read:
+        img = cv2.imread(image_file)
+    else:
+        img = image_file
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     ret, thresh = cv2.threshold(gray, 254, 255, cv2.THRESH_BINARY)
     img_erode = cv2.erode(thresh, np.ones((3, 3), np.uint8), iterations=1)
