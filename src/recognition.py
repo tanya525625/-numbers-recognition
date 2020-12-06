@@ -79,8 +79,8 @@ def main():
 
         # После letters_extract мы получаем изображение почти как в MNIST за исключением инвертации
         # Я думаю, что этого хватит для корректной работы
-        for i in range(len(img_lists)):
-            img = cv2.bitwise_not(img_lists[i][2])
+        for i in img_lists:
+            img = cv2.bitwise_not(i)
             utils.show_image(img)
             pred = recognizer.recognize(img, models_path)
             print(f'Recognized digit: {pred}')

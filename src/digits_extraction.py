@@ -2,12 +2,11 @@ from typing import List
 
 import numpy as np
 import cv2
-from PIL import Image
 
 # image_file = "C:\\Users\\Home\\Desktop\\alg\\source.png"
 
 
-def letters_extract(image_file: str, is_read=True, out_size=28) -> List[Image.Image]:
+def letters_extract(image_file: str, is_read=True, out_size=28) -> List[np.array]:
     if is_read:
         img = cv2.imread(image_file)
     else:
@@ -45,21 +44,24 @@ def letters_extract(image_file: str, is_read=True, out_size=28) -> List[Image.Im
                 letter_square[0:h, x_pos:x_pos + w] = letter_crop
             else:
                 letter_square = letter_crop
-
             # Resize letter to 28x28 and add letter and its X-coordinate
             letters.append((x, w, cv2.resize(letter_square, (out_size, out_size), interpolation=cv2.INTER_AREA)))
     # cv2.imshow("Output", output)
     # cv2.waitKey(0)
     # Sort array in place by X-coordinate
     letters.sort(key=lambda x: x[0], reverse=False)
+    img_with_border = []
+    for i in range(len(letters)):
+        border = cv2.copyMakeBorder(letters[i][2], 3, 3, 3, 3, cv2.BORDER_CONSTANT, value=[255, 255, 255])
+        img_with_border.append(cv2.resize(border, (out_size, out_size)))
 
-    # letters_as_image = [Image.fromarray(np.uint8(letter[2])).convert('RGB') for letter in letters]
-
-    return letters
+    return img_with_border
 
 
 # letters = letters_extract(image_file)
 # k = 0
-# for letter in letters:
-#     letter.save(f"C:\\Users\\Home\\Desktop\\alg\\{k}.png")
+# for i in letters:
+#     l = Image.fromarray(np.uint8(i)).convert('RGB')
+#     l.save(f"C:\\Users\\Home\\Desktop\\alg\\{k}.png")
 #     k += 1
+
