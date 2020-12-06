@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 from PIL import Image
 
-# image_file = "C:\\Users\\Home\\Desktop\\alg\\source.png"
+# image_file = "C:\\Users\\Home\\Desktop\\alg\\source_3.png"
 
 
 def letters_extract(image_file: str, out_size=28) -> List[Image.Image]:
@@ -50,9 +50,9 @@ def letters_extract(image_file: str, out_size=28) -> List[Image.Image]:
     # Sort array in place by X-coordinate
     letters.sort(key=lambda x: x[0], reverse=False)
 
-    letters_as_image = [Image.fromarray(np.uint8(letter[2])).convert('RGB') for letter in letters]
+    # letters_as_image = [Image.fromarray(np.uint8(letter[2])).convert('RGB') for letter in letters]
 
-    return letters_as_image
+    return letters
 
 
 # letters = letters_extract(image_file)
