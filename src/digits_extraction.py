@@ -53,9 +53,9 @@ def letters_extract(image_file: str, is_read=True, out_size=28) -> List[Image.Im
     # Sort array in place by X-coordinate
     letters.sort(key=lambda x: x[0], reverse=False)
 
-    letters_as_image = [Image.fromarray(np.uint8(letter[2])).convert('RGB') for letter in letters]
+    # letters_as_image = [Image.fromarray(np.uint8(letter[2])).convert('RGB') for letter in letters]
 
-    return letters_as_image
+    return letters
 
 
 # letters = letters_extract(image_file)

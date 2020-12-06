@@ -61,19 +61,29 @@ def main():
         # my_img = utils.resize_image(my_img, 4, 7, 7)
         # print(my_img)
         # # width, height = my_img.shape[:2]
-        for image in img_lists:
-            # image = cv2.imread(str(file_path))
-            image = Image.fromarray(np.uint8(image)).convert('RGB')
-            image = ImageOps.invert(image)
-            image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
-            image = recognizer.make_grayscale(image)
-            image = utils.resize_image(image, 4, 7, 7)
-            image = cv2.blur(image, (2, 2))
-            _, image = cv2.threshold(image, 50, 255, cv2.THRESH_BINARY)
 
-            utils.show_image(image)
-            # pred = recognizer.recognize(image, models_path)
-            # print(f'Recognized digit: {pred}')
+        # for image in img_lists:
+        #
+        #     # image = cv2.imread(str(file_path))
+        #     image = Image.fromarray(np.uint8(image)).convert('RGB')
+        #     image = ImageOps.invert(image)
+        #     image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+        #     image = recognizer.make_grayscale(image)
+        #     image = utils.resize_image(image, 4, 7, 7)
+        #     image = cv2.blur(image, (2, 2))
+        #     _, image = cv2.threshold(image, 50, 255, cv2.THRESH_BINARY)
+        #
+        #     utils.show_image(image)
+        #     # pred = recognizer.recognize(image, models_path)
+        #     # print(f'Recognized digit: {pred}')
+
+        # После letters_extract мы получаем изображение почти как в MNIST за исключением инвертации
+        # Я думаю, что этого хватит для корректной работы
+        for i in range(len(img_lists)):
+            img = cv2.bitwise_not(img_lists[i][2])
+            utils.show_image(img)
+            pred = recognizer.recognize(img, models_path)
+            print(f'Recognized digit: {pred}')
 
 
 if __name__ == '__main__':

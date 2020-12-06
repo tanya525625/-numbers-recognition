@@ -16,14 +16,9 @@ def make_mean_value_in_square(image, window=4):
     return squares_mean_values
 
 
-# def haar_features(image, window=4):
-def haar_features(img, size=(90, 60)):
-    # image = utils.resize_image(image, window)
-    img_2 = cv2.resize(img, size)
-    ret, image = cv2.threshold(img_2, 127, 255, cv2.THRESH_BINARY)
-    # h, w = image.shape
-    w = size[1]
-    h = size[0]
+def haar_features(image, window=4):
+    image = utils.resize_image(image, window)
+    h, w = image.shape
     half = int(w / 2)
     transposed_img = np.transpose(image)
     left_part = transposed_img[:half]
