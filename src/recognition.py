@@ -23,10 +23,11 @@ import src.feature_extractions_methods as fem
 def main():
     data_dir = Path('../data')
     models_path = Path('../models')
-    is_train_mode = False
-    is_prediction_mode = True
+    is_train_mode = True
+    is_prediction_mode = False
     is_test_mode = False
-    file_path = data_dir / 'var2.jpg'
+    # file_path = data_dir / 'var2.jpg'
+    file_path = data_dir / 'source.png'
 
     methods = [fem.make_mean_value_in_square, fem.haar_features, fem.diag_prizn_1, fem.diag_prizn_2]
     classifiers = [KNeighborsClassifier(), GradientBoostingClassifier(), SVC()]
@@ -47,7 +48,7 @@ def main():
             score = accuracy_score(test_y, y_pred)
             print(f'Accuracy: {score}')
     if is_prediction_mode:
-        img_lists = letters_extract(str(file_path))
+        letters = letters_extract(str(file_path))
         # (train_X, train_y), (test_X, test_y) = mnist.load_data()
         # img = train_X[0]
         # image = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
@@ -60,16 +61,22 @@ def main():
         # my_img = utils.resize_image(my_img, 4, 7, 7)
         # print(my_img)
         # # width, height = my_img.shape[:2]
-        for image in img_lists:
-            image = ImageOps.invert(image)
-            image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
-            image = recognizer.make_grayscale(image)
-            image = utils.resize_image(image, 4, 7, 7)
-            _, image = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
+
+        # for image in img_lists:
+            # image = ImageOps.invert(image)
+            #img = cv2.imread(image_file)
+            # image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+            # image = recognizer.make_grayscale(image)
+            # image = utils.resize_image(image, 4, 7, 7)
+            # _, image = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
             # image = cv2.blur(image, (3, 3))
-            utils.show_image(image)
-            pred = recognizer.recognize(image, models_path)
-            # print(f'Recognized digit: {pred}')
+            # utils.show_image(image)
+
+        for i in range(len(letters)):
+            img = cv2.bitwise_not(letters[i][2])
+            utils.show_image(img)
+            pred = recognizer.recognize(img, models_path)
+            print(f'Recognized digit: {pred}')
 
 
 if __name__ == '__main__':
