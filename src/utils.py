@@ -13,3 +13,4 @@ def resize_image(img, window, st_h=7, st_w=7):
     dim = (width, height)
     return cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
 
+

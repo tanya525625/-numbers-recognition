@@ -7,6 +7,7 @@ import time
 import imutils
 import numpy as np
 from PIL import ImageOps, Image
+from sklearn.metrics import accuracy_score
 from tqdm import tqdm
 
 from src.digits_extraction import letters_extract
@@ -20,7 +21,6 @@ class Recognizer:
 
     def train(self, train_X, train_y, models_path):
         train_data = []
-        train_data_y = []
         print("Features' applying process")
         time.sleep(1)
         for x, y in tqdm(zip(train_X, train_y)):
@@ -28,13 +28,34 @@ class Recognizer:
             x = self.make_grayscale(x)
             x = utils.resize_image(x, 4, 7, 7)
             _, image = cv2.threshold(x, 127, 255, cv2.THRESH_BINARY)
-            utils.show_image(image)
+            # utils.show_image(image)
             train_data.append(self.apply_features(image))
-            train_data_y.append(y)
-        print(len(train_data))
         for classifier in tqdm(self.classifiers):
-            classifier.fit(X=train_data, y=train_data_y)
+            classifier.fit(X=train_data, y=train_y)
             dump(classifier, models_path / f'{str(classifier).replace(")", "").replace("(", "")}.joblib')
+
+    def test_models(self, models_path, X_test, y_test):
+        curr_predictions = []
+        test_data = []
+        print('Models testing applying features process')
+        time.sleep(1)
+        for x in tqdm(X_test):
+            test_data.append(self.apply_features(x))
+        print('Models predictions process')
+        time.sleep(1)
+        for model_name in tqdm(os.listdir(models_path)):
+            curr_predictions.clear()
+            model = load(models_path / model_name)
+            for x in test_data:
+                x = np.array(x).reshape(1, -1)
+                pred = model.predict(x)
+                if pred:
+                    pred = int(pred)
+                else:
+                    pred = 0
+                curr_predictions.append(pred)
+            acc = accuracy_score(y_test, curr_predictions)
+            print(f'Accuracy for {model_name}: {acc}')
 
     @staticmethod
     def detect_number(img):

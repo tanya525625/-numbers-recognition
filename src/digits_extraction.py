@@ -1,18 +1,18 @@
+import math
 from typing import List
 
 import numpy as np
 import cv2
-
 # image_file = "C:\\Users\\Home\\Desktop\\alg\\source.png"
 
 
-def letters_extract(image_file: str, is_read=True, out_size=28,border_size=3) -> List[np.array]:
+def letters_extract(image_file: str, is_read=True, out_size=20,border_size=3) -> List[np.array]:
     if is_read:
         img = cv2.imread(image_file)
     else:
         img = image_file
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    ret, thresh = cv2.threshold(gray, 254, 255, cv2.THRESH_BINARY)
+    ret, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
     img_erode = cv2.erode(thresh, np.ones((3, 3), np.uint8), iterations=1)
 
     # Get contours
@@ -23,6 +23,7 @@ def letters_extract(image_file: str, is_read=True, out_size=28,border_size=3) ->
     letters = []
     for idx, contour in enumerate(contours):
         (x, y, w, h) = cv2.boundingRect(contour)
+        coords = (x, y, w, h)
         if hierarchy[0][idx][3] == 0:
             cv2.rectangle(output, (x, y), (x + w, y + h), (70, 0, 0), 1)
             letter_crop = img_erode[y:y + h, x:x + w]
@@ -45,18 +46,20 @@ def letters_extract(image_file: str, is_read=True, out_size=28,border_size=3) ->
             else:
                 letter_square = letter_crop
             # Resize letter to 28x28 and add letter and its X-coordinate
-            letters.append((x, w, cv2.resize(letter_square, (out_size, out_size), interpolation=cv2.INTER_AREA)))
+            letter = cv2.resize(letter_square, (out_size, out_size), interpolation=cv2.INTER_AREA)
+            letters.append((x, w, letter))
     # cv2.imshow("Output", output)
     # cv2.waitKey(0)
     # Sort array in place by X-coordinate
     letters.sort(key=lambda x: x[0], reverse=False)
-    img_with_border = []
+    imgs_with_border = []
     for i in range(len(letters)):
         border = cv2.copyMakeBorder(letters[i][2], border_size, border_size, border_size, border_size,
                                     cv2.BORDER_CONSTANT, value=[255, 255, 255])
-        img_with_border.append(cv2.resize(border, (out_size, out_size)))
+        img_with_border = cv2.resize(border, (out_size, out_size))
+        imgs_with_border.append(img_with_border)
 
-    return img_with_border
+    return imgs_with_border
 
 
 # letters = letters_extract(image_file)
