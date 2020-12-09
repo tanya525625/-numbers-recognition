@@ -1,3 +1,5 @@
+from collections import deque
+
 import cv2
 from PIL import Image
 import numpy as np
@@ -99,3 +101,53 @@ def diag_prizn_2(img, size = (90, 60), h = 10):
             prizn_2.append(sum_pix / 100)
             sum_pix = 0
     return prizn_2
+
+
+def make_square_proportion(image):
+    graph = dict()
+    for i in range(image.shape[0]):
+        for j in range(image.shape[1]):
+            if image[i][j] == 0:
+                if not bool(graph):
+                    start = (i, j)
+                if i==0:
+                    if j==0:
+                        graph[(i,j)]=[(i+1,j), (i,j+1)]
+                    elif j==image.shape[1]-1:
+                        graph[(i,j)]=[(i+1,j), (i,j-1)]
+                    else:
+                        graph[(i,j)]=[(i+1,j), (i,j-1), (i, j+1)]
+                elif i==image.shape[0]-1:
+                    if j==0:
+                        graph[(i,j)]=[(i-1,j), (i,j+1)]
+                    elif j==image.shape[1]-1:
+                        graph[(i,j)]=[(i-1,j), (i,j-1)]
+                    else:
+                        graph[(i,j)]=[(i-1,j), (i,j-1), (i, j+1)]
+                elif j==0:
+                    graph[(i,j)]=[(i-1,j), (i+1,j), (i,j+1)]
+                elif j==image.shape[1]-1:
+                    graph[(i,j)]=[(i-1,j), (i+1,j), (i,j-1)]
+                else:
+                    graph[(i,j)]=[(i-1,j), (i+1,j), (i,j-1), (i,j+1)]
+
+    S = image.size
+
+    return [BFS(graph, start)/S]
+
+
+def BFS(graph, start):
+    visited = []
+    search_q = deque()
+    search_q += [start]
+
+    while search_q:
+        start = search_q.popleft()
+
+        if not start in visited:
+            if start in graph:
+                search_q += graph.get(start)
+
+            visited.append(start)
+
+    return len(visited)

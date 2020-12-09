@@ -23,6 +23,8 @@ class Recognizer:
         train_data = []
         print("Features' applying process")
         time.sleep(1)
+        # train_X = train_X[:10]
+        # train_y = train_y[:10]
         for x, y in tqdm(zip(train_X, train_y)):
             x = cv2.cvtColor(np.array(x), cv2.COLOR_RGB2BGR)
             x = self.make_grayscale(x)
@@ -77,6 +79,7 @@ class Recognizer:
     def apply_features(self, detected_img):
         features = []
         for method in self.feature_extractions_methods:
+            # print(method(detected_img))
             features.extend(method(detected_img))
         return features
 
