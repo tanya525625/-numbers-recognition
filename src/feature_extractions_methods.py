@@ -1,7 +1,6 @@
 from collections import deque
 
 import cv2
-from PIL import Image
 import numpy as np
 
 import src.utils as utils

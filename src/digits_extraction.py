@@ -6,13 +6,14 @@ import cv2
 # image_file = "C:\\Users\\Home\\Desktop\\alg\\source.png"
 
 
-def letters_extract(image_file: str, is_read=True, out_size=20,border_size=3) -> List[np.array]:
+def letters_extract(image_file: str, is_read=True, out_size=28, border_size=3) -> List[np.array]:
     if is_read:
         img = cv2.imread(image_file)
     else:
         img = image_file
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    ret, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+    # gray = cv2.blur(gray, (2, 2))
+    ret, thresh = cv2.threshold(gray, 254, 255, cv2.THRESH_BINARY)
     img_erode = cv2.erode(thresh, np.ones((3, 3), np.uint8), iterations=1)
 
     # Get contours
