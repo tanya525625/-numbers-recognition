@@ -53,7 +53,7 @@ def main():
         img_lists = letters_extract(str(file_path), is_read=True)
         for i in img_lists:
             img = cv2.bitwise_not(i)
-            ret, img = cv2.threshold(img, 20, 255, cv2.THRESH_BINARY)
+            ret, img = cv2.threshold(img, 50, 255, cv2.THRESH_BINARY)
             pred = recognizer.recognize(img, models_path)
             app = App(pred, img)
 
