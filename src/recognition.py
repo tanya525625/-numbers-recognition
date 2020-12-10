@@ -11,6 +11,7 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.neighbors import KNeighborsClassifier
 
 from src.output import App
+import src.utils as utils
 from src.digits_extraction import letters_extract
 from src.recognizer import Recognizer
 import src.feature_extractions_methods as fem
@@ -24,6 +25,9 @@ def main():
     is_test_mode = False
     is_models_test_mode = False
     file_path = data_dir / '111.png'
+    
+    utils.create_dir_if_not_exists(models_path)
+    utils.create_dir_if_not_exists(data_dir)
 
     methods = [fem.make_mean_value_in_square, fem.haar_features, fem.diag_prizn_1, fem.diag_prizn_2,
                fem.make_square_proportion]
